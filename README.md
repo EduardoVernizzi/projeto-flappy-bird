@@ -2,10 +2,14 @@
 
 Este é um jogo simples de **Flappy Bird** implementado utilizando **JavaScript** e **CSS**. O jogo segue as mecânicas clássicas, onde o jogador controla um pássaro que precisa passar entre barreiras móveis sem colidir com elas.
 
+[Experimente o Flappy Bird!](https://eduardovernizzi.github.io/projeto-flappy-bird/)
+
 
 ## Preview do Jogo
 
 ![Preview do Jogo](./imagens/jogo.png)
+
+
 
 ## Funcionalidades Implementadas
 
