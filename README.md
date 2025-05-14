@@ -5,8 +5,6 @@ Este é um jogo simples de **Flappy Bird** implementado utilizando **JavaScript*
 
 ## Preview do Jogo
 
-Veja o jogo em ação:
-
 ![Preview do Jogo](./imagens/jogo.png)
 
 ## Funcionalidades Implementadas
