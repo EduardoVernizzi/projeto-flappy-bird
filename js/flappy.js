@@ -145,8 +145,9 @@ function FlappyBird() {
   const areaDoJogo = document.querySelector('[tp-flappy]')
   areaDoJogo.innerHTML = ''
 
-  const altura = areaDoJogo.clientHeight
   const largura = areaDoJogo.clientWidth
+  const altura = largura * (7 / 12) // mantém proporção 1200:700 = 12:7
+  areaDoJogo.style.height = `${altura}px`
 
   const recorde = new Recorde()
   const progresso = new Progresso()
@@ -155,14 +156,16 @@ function FlappyBird() {
     progresso.atualizarPontos(++pontos)
   })
 
-  // Adiciona os elementos na ordem
   areaDoJogo.appendChild(recorde.elemento)
   areaDoJogo.appendChild(progresso.elemento)
   areaDoJogo.appendChild(passaro.elemento)
   barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento))
 
+  // Armazena temporizador para poder limpar depois
+  this.temporizador = null
+
   this.start = () => {
-    const temporizador = setInterval(() => {
+    this.temporizador = setInterval(() => {
       barreiras.animar()
       passaro.animar()
 
@@ -173,36 +176,29 @@ function FlappyBird() {
           recorde.atualizar(pontos)
         }
 
-        clearInterval(temporizador)
-
+        clearInterval(this.temporizador)
         overlay.style.display = 'flex'
-        btnRestart.style.display = 'inline-block' // MOSTRA restart
-        btnIniciar.style.display = 'none'          // ESCONDE iniciar
+        btnRestart.style.display = 'inline-block'
+        btnIniciar.style.display = 'none'
         musicaFundo.pause()
         musicaFundo.currentTime = 0
         somGameOver.play()
       }
     }, 20)
   }
+
+  this.stop = () => {
+    if (this.temporizador) clearInterval(this.temporizador)
+  }
 }
+
 
 
 let jogo = null
 
-const btnIniciar = document.getElementById('btn-iniciar')
-const btnRestart = document.getElementById('btn-restart')
-const overlay = document.getElementById('overlay')
-const musicaFundo = document.getElementById('musica-fundo')
-musicaFundo.volume = 0.3
-const somGameOver = new Audio('./sounds/gameover.mp3')
-
-overlay.style.display = 'flex' // exibe overlay inicialmente
-
-// Função para iniciar ou reiniciar o jogo
 function iniciarJogo() {
   if (jogo) {
-    // Para o jogo antigo (se precisar implementar uma função de stop, faça aqui)
-    // Por enquanto o clearInterval já limpa o temporizador dentro do FlappyBird
+    jogo.stop()  // Para o jogo antigo, se existir
   }
 
   jogo = new FlappyBird()
