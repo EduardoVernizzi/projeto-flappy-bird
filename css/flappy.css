@@ -106,9 +106,16 @@ body {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.6);
     display: none;
+    flex-direction: column; /* empilhar botões verticalmente */
     align-items: center;
     justify-content: center;
     z-index: 999;
+    gap: 20px; /* espaçamento entre botões */
+}
+
+#btn-restart {
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    display: inline-block; /* importante para sobrescrever display: none */
 }
 
 /* Botões centrais */
@@ -130,9 +137,6 @@ body {
     opacity: 0.9;
 }
 
-#btn-restart {
-    background: linear-gradient(to right, #ff416c, #ff4b2b);
-}
 
 body {
     margin: 0;
