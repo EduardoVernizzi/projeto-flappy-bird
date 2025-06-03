@@ -174,8 +174,10 @@ function FlappyBird() {
         }
 
         clearInterval(temporizador)
+
         overlay.style.display = 'flex'
-        btnRestart.style.display = 'inline-block'
+        btnRestart.style.display = 'inline-block' // MOSTRA restart
+        btnIniciar.style.display = 'none'          // ESCONDE iniciar
         musicaFundo.pause()
         musicaFundo.currentTime = 0
         somGameOver.play()
@@ -185,7 +187,6 @@ function FlappyBird() {
 }
 
 
-// CONTROLE DOS BOTÕES
 let jogo = null
 
 const btnIniciar = document.getElementById('btn-iniciar')
@@ -195,27 +196,26 @@ const musicaFundo = document.getElementById('musica-fundo')
 musicaFundo.volume = 0.3
 const somGameOver = new Audio('./sounds/gameover.mp3')
 
-// Mostra overlay ao carregar
-overlay.style.display = 'flex'
+overlay.style.display = 'flex' // exibe overlay inicialmente
 
-btnIniciar.onclick = () => {
-  if (jogo) return
+// Função para iniciar ou reiniciar o jogo
+function iniciarJogo() {
+  if (jogo) {
+    // Para o jogo antigo (se precisar implementar uma função de stop, faça aqui)
+    // Por enquanto o clearInterval já limpa o temporizador dentro do FlappyBird
+  }
+
   jogo = new FlappyBird()
   jogo.start()
+
   overlay.style.display = 'none'
   btnIniciar.style.display = 'none'
-  musicaFundo.pause()
-  musicaFundo.currentTime = 0
-  musicaFundo.play()
-}
-
-btnRestart.onclick = () => {
-  jogo = new FlappyBird()
-  jogo.start()
-  overlay.style.display = 'none'
   btnRestart.style.display = 'none'
-  btnIniciar.style.display = 'none'
+
   musicaFundo.pause()
   musicaFundo.currentTime = 0
   musicaFundo.play()
 }
+
+btnIniciar.onclick = iniciarJogo
+btnRestart.onclick = iniciarJogo
