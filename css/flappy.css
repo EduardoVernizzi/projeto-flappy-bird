@@ -1,94 +1,95 @@
 /* Pequeno reset na página*/
 html {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    margin: 0;
-    background-color: #0D262D;
-    color: #fff;
-    height: 100%;
+  margin: 0;
+  background-color: #0D262D;
+  color: #fff;
+  height: 100%;
 }
 
 .conteudo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100%;
 }
 
 /* Estilo do Game */
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 @font-face {
-    font-family: 'Pixel';
-    src: url('../fonts/Pixel.ttf');
+  font-family: 'Pixel';
+  src: url('../fonts/Pixel.ttf');
 }
 
 
 [tp-flappy] {
-    position: relative;
-    border: 5px solid dodgerblue;
-    height: 700px;
-    width: 1200px;
-    background-color: deepskyblue;
-    overflow: hidden;
+  position: relative;
+  border: 5px solid dodgerblue;
+  height: 700px;
+  width: 1200px;
+  background-color: deepskyblue;
+  overflow: hidden;
 }
 
 .passaro {
-    position: absolute;
-    width: 60px;
-    left: calc(50% - 30px);
-    
+  position: absolute;
+  width: 60px;
+  left: calc(50% - 30px);
+
 }
 
 .par-de-barreiras {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .barreira {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .barreira .borda {
-    height: 30px;
-    width: 130px;
-    background: linear-gradient(90deg, #639301, #A5E82E);
-    border: 2px solid #000;
+  height: 30px;
+  width: 130px;
+  background: linear-gradient(90deg, #639301, #A5E82E);
+  border: 2px solid #000;
 }
 
 .barreira .corpo {
-    height: 150px;
-    width: 110px;
-    background: linear-gradient(90deg, #639301, #A5E82E);
-    border-left: 2px solid #000;
-    border-right: 2px solid #000;
+  height: 150px;
+  width: 110px;
+  background: linear-gradient(90deg, #639301, #A5E82E);
+  border-left: 2px solid #000;
+  border-right: 2px solid #000;
 }
 
 .progresso {
   position: absolute;
-  top: 70px; /* antes era 10px */
+  top: 70px;
   right: 10px;
   font-family: 'Pixel';
-  font-size: 70px;
-  z-index: 998; /* menor que o recorde, mas ainda alto */
+  font-size: clamp(24px, 8vw, 70px);
+  /* responsivo */
+  z-index: 998;
 }
 
 .recorde {
   position: absolute;
   top: 10px;
   right: 10px;
- 
+
   font-size: 30px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.5);
@@ -97,53 +98,67 @@ body {
   z-index: 999;
 }
 
-  /* Fundo escurecido (overlay) */
-  #overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: none;
-    flex-direction: column; /* empilhar botões verticalmente */
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-    gap: 20px; /* espaçamento entre botões */
+/* Fundo escurecido (overlay) */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  /* valor alto para garantir que esteja na frente */
+  gap: 20px;
+}
+
+#btn-iniciar,
+#btn-restart {
+  padding: 15px 40px;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  z-index: 10000;
+  display: inline-block;
 }
 
 #btn-restart {
-    background: linear-gradient(to right, #ff416c, #ff4b2b);
-    display: inline-block; /* importante para sobrescrever display: none */
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
 }
 
 /* Botões centrais */
 .btn-jogo {
-    padding: 15px 40px;
-    font-size: 22px;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
-    background: linear-gradient(to right, #00c6ff, #0072ff);
-    color: white;
+  padding: 15px 40px;
+  font-size: 22px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
 }
 
 .btn-jogo:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 
 
 body {
-    margin: 0;
-    overflow: hidden;
+  margin: 0;
+  overflow: hidden;
 }
 
 main[tp-flappy] {
-    position: relative;
-    z-index: 1;
+  position: relative;
+  z-index: 1;
 }

@@ -174,8 +174,8 @@ function FlappyBird() {
         }
 
         clearInterval(temporizador)
-        document.getElementById('overlay').style.display = 'flex'
-        document.getElementById('btn-restart').style.display = 'inline-block'
+        overlay.style.display = 'flex'
+        btnRestart.style.display = 'inline-block'
         musicaFundo.pause()
         musicaFundo.currentTime = 0
         somGameOver.play()
@@ -192,17 +192,19 @@ const btnIniciar = document.getElementById('btn-iniciar')
 const btnRestart = document.getElementById('btn-restart')
 const overlay = document.getElementById('overlay')
 const musicaFundo = document.getElementById('musica-fundo')
-musicaFundo.volume = 0.3 // volume entre 0.0 e 1.0
-const somGameOver = new Audio('./sounds/gameover.mp3');
+musicaFundo.volume = 0.3
+const somGameOver = new Audio('./sounds/gameover.mp3')
 
-overlay.style.display = 'flex' // exibe overlay ao carregar
+// Mostra overlay ao carregar
+overlay.style.display = 'flex'
 
 btnIniciar.onclick = () => {
   if (jogo) return
   jogo = new FlappyBird()
   jogo.start()
-  btnIniciar.style.display = 'none'
   overlay.style.display = 'none'
+  btnIniciar.style.display = 'none'
+  musicaFundo.pause()
   musicaFundo.currentTime = 0
   musicaFundo.play()
 }
@@ -210,8 +212,10 @@ btnIniciar.onclick = () => {
 btnRestart.onclick = () => {
   jogo = new FlappyBird()
   jogo.start()
-  btnIniciar.style.display = 'none'
   overlay.style.display = 'none'
+  btnRestart.style.display = 'none'
+  btnIniciar.style.display = 'none'
+  musicaFundo.pause()
   musicaFundo.currentTime = 0
   musicaFundo.play()
 }
