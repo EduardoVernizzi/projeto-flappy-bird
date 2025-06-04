@@ -1,3 +1,9 @@
+const overlay = document.getElementById('overlay')
+const btnIniciar = document.getElementById('btn-iniciar')
+const btnRestart = document.getElementById('btn-restart')
+const musicaFundo = document.getElementById('musica-fundo')
+const somGameOver = new Audio('sounds/gameover.mp3')
+
 function novoElemento(tagName, className) {
   const elem = document.createElement(tagName)
   elem.className = className
@@ -6,7 +12,6 @@ function novoElemento(tagName, className) {
 
 function Barreira(reversa = false) {
   this.elemento = novoElemento('div', 'barreira')
-
   const borda = novoElemento('div', 'borda')
   const corpo = novoElemento('div', 'corpo')
 
@@ -18,7 +23,6 @@ function Barreira(reversa = false) {
 
 function ParDeBarreiras(altura, abertura, x) {
   this.elemento = novoElemento('div', 'par-de-barreiras')
-
   this.superior = new Barreira(true)
   this.inferior = new Barreira(false)
 
@@ -28,7 +32,6 @@ function ParDeBarreiras(altura, abertura, x) {
   this.sortearAbertura = () => {
     const alturaSuperior = Math.random() * (altura - abertura)
     const alturaInferior = altura - abertura - alturaSuperior
-
     this.superior.setAltura(alturaSuperior)
     this.inferior.setAltura(alturaInferior)
   }
@@ -49,7 +52,7 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
     new ParDeBarreiras(altura, abertura, largura + espaco * 3)
   ]
 
-  const deslocamento = 3
+  const deslocamento = largura > 600 ? 3 : 2
 
   this.animar = () => {
     this.pares.forEach(par => {
@@ -67,11 +70,12 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
   }
 }
 
-function Passaro(alturaJogo) {
+function Passaro(alturaJogo, escala = 1) {
   let voando = false
 
   this.elemento = novoElemento('img', 'passaro')
   this.elemento.src = 'imagens/passaro.png'
+  this.elemento.style.width = `${60 * escala}px`
   this.elemento.style.bottom = '0px'
 
   this.getY = () => parseInt(this.elemento.style.bottom?.split('px')[0] || '0')
@@ -89,13 +93,9 @@ function Passaro(alturaJogo) {
     const novoY = this.getY() + (voando ? 8 : -5)
     const alturaMaxima = alturaJogo - this.elemento.clientHeight
 
-    if (novoY <= 0) {
-      this.setY(0)
-    } else if (novoY >= alturaMaxima) {
-      this.setY(alturaMaxima)
-    } else {
-      this.setY(novoY)
-    }
+    if (novoY <= 0) this.setY(0)
+    else if (novoY >= alturaMaxima) this.setY(alturaMaxima)
+    else this.setY(novoY)
   }
 
   this.setY(alturaJogo / 2)
@@ -109,23 +109,16 @@ function Progresso() {
 
 function Recorde() {
   this.elemento = novoElemento('span', 'recorde')
-
   this.obter = () => parseInt(localStorage.getItem('recorde') || '0')
-
-  this.atualizar = valor => {
-    this.elemento.innerHTML = `🏆 ${valor}`
-  }
-
+  this.atualizar = valor => this.elemento.innerHTML = `🏆 ${valor}`
   this.atualizar(this.obter())
 }
 
 function estaoSobrePostos(elementoA, elementoB) {
   const a = elementoA.getBoundingClientRect()
   const b = elementoB.getBoundingClientRect()
-
   const horizontal = a.left + a.width >= b.left && b.left + b.width >= a.left
   const vertical = a.top + a.height >= b.top && b.top + b.height >= a.top
-
   return horizontal && vertical
 }
 
@@ -133,7 +126,6 @@ function colidiu(passaro, barreiras) {
   return barreiras.pares.some(par => {
     const superior = par.superior.elemento
     const inferior = par.inferior.elemento
-
     return estaoSobrePostos(passaro.elemento, superior) ||
       estaoSobrePostos(passaro.elemento, inferior)
   })
@@ -146,13 +138,37 @@ function FlappyBird() {
   areaDoJogo.innerHTML = ''
 
   const largura = areaDoJogo.clientWidth
-  const altura = largura * (7 / 12) // mantém proporção 1200:700 = 12:7
+  const larguraTela = window.innerWidth
+
+  const altura = largura < 480
+    ? largura * (9 / 12)
+    : largura * (7 / 12)
+
   areaDoJogo.style.height = `${altura}px`
+
+  let espacoBarreiras
+  if (larguraTela <= 600) {        // celular
+    espacoBarreiras = 280
+  } else if (larguraTela <= 1024) { // tablet
+    espacoBarreiras = 350
+  } else {                          // notebook/desktop
+    espacoBarreiras = 420
+  }
+
+  let abertura
+  if (larguraTela <= 600) {        // celular
+    abertura = 190
+  } else if (larguraTela <= 1024) { // tablet
+    abertura = 220
+  } else {                          // notebook/desktop
+    abertura = 440    // Aumentei aqui para dar mais espaço vertical
+  }
+
 
   const recorde = new Recorde()
   const progresso = new Progresso()
   const passaro = new Passaro(altura)
-  const barreiras = new Barreiras(altura, largura, 200, 400, () => {
+  const barreiras = new Barreiras(altura, largura, abertura, espacoBarreiras, () => {
     progresso.atualizarPontos(++pontos)
   })
 
@@ -161,7 +177,6 @@ function FlappyBird() {
   areaDoJogo.appendChild(passaro.elemento)
   barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento))
 
-  // Armazena temporizador para poder limpar depois
   this.temporizador = null
 
   this.start = () => {
@@ -192,15 +207,10 @@ function FlappyBird() {
   }
 }
 
-
-
 let jogo = null
 
 function iniciarJogo() {
-  if (jogo) {
-    jogo.stop()  // Para o jogo antigo, se existir
-  }
-
+  if (jogo) jogo.stop()
   jogo = new FlappyBird()
   jogo.start()
 
