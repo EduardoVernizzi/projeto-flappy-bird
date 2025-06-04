@@ -142,8 +142,10 @@ body {
 /* Começa escondido o botão Restart */
 #btn-restart {
   background: linear-gradient(to right, #ff416c, #ff4b2b);
-  display: none;
+  visibility: hidden;
+  /* mantém o botão "invisível" mas ocupando espaço */
 }
+
 
 /* Botões centrais */
 .btn-jogo {

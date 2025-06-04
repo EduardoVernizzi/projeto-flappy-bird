@@ -157,27 +157,23 @@ function FlappyBird() {
     espacoBarreiras = 450
   }
 
-
   let abertura
   if (larguraTela <= 600) {        // celular
     abertura = 170
   } else if (larguraTela <= 1024) { // tablet
-    abertura = 180
+    abertura = 190
   } else {                          // notebook/desktop
-    abertura = 430    // Aumentei aqui para dar
+    abertura = 430
   }
 
-  // Definindo a escala do pássaro conforme a largura da tela
   let escalaPassaro
   if (larguraTela <= 600) {
-    escalaPassaro = 0.7  // menor no celular
+    escalaPassaro = 0.7
   } else if (larguraTela <= 1024) {
-    escalaPassaro = 0.85 // um pouco maior no tablet
+    escalaPassaro = 0.85
   } else {
-    escalaPassaro = 1    // tamanho normal no desktop/notebook
+    escalaPassaro = 1
   }
-
-
 
   const recorde = new Recorde()
   const progresso = new Progresso()
@@ -207,8 +203,8 @@ function FlappyBird() {
 
         clearInterval(this.temporizador)
         overlay.style.display = 'flex'
-        btnRestart.style.display = 'inline-block'
-        btnIniciar.style.display = 'none'
+        btnRestart.style.visibility = 'visible'
+        btnIniciar.style.visibility = 'hidden'
         musicaFundo.pause()
         musicaFundo.currentTime = 0
         somGameOver.play()
@@ -229,18 +225,22 @@ function iniciarJogo() {
   jogo.start()
 
   overlay.style.display = 'none'
-  btnIniciar.style.display = 'none'
-  btnRestart.style.display = 'none'
+  btnIniciar.style.visibility = 'hidden'
+  btnRestart.style.visibility = 'hidden'
 
   musicaFundo.pause()
   musicaFundo.currentTime = 0
   musicaFundo.play()
 }
 
-// Usando addEventListener para garantir eventos de clique e toque funcionem bem
 btnIniciar.addEventListener('click', iniciarJogo)
-
-// Para o restart, adicionar click e touchstart para funcionar no celular
 btnRestart.addEventListener('click', iniciarJogo)
-btnRestart.addEventListener('touchstart', iniciarJogo)
+
+// Opcional: delegação para garantir toque/click no botão restart em mobiles
+overlay.addEventListener('click', (event) => {
+  if (event.target === btnRestart) iniciarJogo()
+})
+overlay.addEventListener('touchstart', (event) => {
+  if (event.target === btnRestart) iniciarJogo()
+})
 
