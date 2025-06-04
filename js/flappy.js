@@ -239,4 +239,8 @@ function iniciarJogo() {
 
 // Usando addEventListener para garantir eventos de clique e toque funcionem bem
 btnIniciar.addEventListener('click', iniciarJogo)
+
+// Para o restart, adicionar click e touchstart para funcionar no celular
 btnRestart.addEventListener('click', iniciarJogo)
+btnRestart.addEventListener('touchstart', iniciarJogo)
+
