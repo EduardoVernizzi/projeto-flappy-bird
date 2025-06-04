@@ -47,8 +47,6 @@ body {
 .passaro {
   position: absolute;
   left: calc(50% - 30px);
-  /* Remova a largura fixa aqui para permitir o JS controlar */
-  /* width: 60px; */
   max-width: 100%;
   height: auto;
   user-select: none;

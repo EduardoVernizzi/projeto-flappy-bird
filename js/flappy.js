@@ -138,7 +138,6 @@ function FlappyBird() {
   areaDoJogo.innerHTML = ''
 
   const largura = areaDoJogo.clientWidth
-  const larguraTela = window.innerWidth
 
   const altura = largura < 480
     ? largura * (9 / 12)
@@ -146,28 +145,43 @@ function FlappyBird() {
 
   areaDoJogo.style.height = `${altura}px`
 
+  const larguraTela = window.innerWidth
+
   let espacoBarreiras
-  if (larguraTela <= 600) {        // celular
-    espacoBarreiras = 280
-  } else if (larguraTela <= 1024) { // tablet
-    espacoBarreiras = 350
-  } else {                          // notebook/desktop
-    espacoBarreiras = 420
+
+  if (larguraTela <= 600) {
+    espacoBarreiras = 300
+  } else if (larguraTela <= 1024) {
+    espacoBarreiras = 400
+  } else {
+    espacoBarreiras = 450
   }
+
 
   let abertura
   if (larguraTela <= 600) {        // celular
-    abertura = 190
+    abertura = 170
   } else if (larguraTela <= 1024) { // tablet
-    abertura = 220
+    abertura = 180
   } else {                          // notebook/desktop
-    abertura = 440    // Aumentei aqui para dar mais espaço vertical
+    abertura = 430    // Aumentei aqui para dar
   }
+
+  // Definindo a escala do pássaro conforme a largura da tela
+  let escalaPassaro
+  if (larguraTela <= 600) {
+    escalaPassaro = 0.7  // menor no celular
+  } else if (larguraTela <= 1024) {
+    escalaPassaro = 0.85 // um pouco maior no tablet
+  } else {
+    escalaPassaro = 1    // tamanho normal no desktop/notebook
+  }
+
 
 
   const recorde = new Recorde()
   const progresso = new Progresso()
-  const passaro = new Passaro(altura)
+  const passaro = new Passaro(altura, escalaPassaro)
   const barreiras = new Barreiras(altura, largura, abertura, espacoBarreiras, () => {
     progresso.atualizarPontos(++pontos)
   })
@@ -223,5 +237,6 @@ function iniciarJogo() {
   musicaFundo.play()
 }
 
-btnIniciar.onclick = iniciarJogo
-btnRestart.onclick = iniciarJogo
+// Usando addEventListener para garantir eventos de clique e toque funcionem bem
+btnIniciar.addEventListener('click', iniciarJogo)
+btnRestart.addEventListener('click', iniciarJogo)
