@@ -36,7 +36,7 @@ function ParDeBarreiras(altura, abertura, x) {
     this.inferior.setAltura(alturaInferior)
   }
 
-  this.getX = () => parseInt(this.elemento.style.left?.split('px')[0] || '0')
+  this.getX = () => parseInt(this.elemento.style.left?.replace('px', '') || '0')
   this.setX = x => this.elemento.style.left = `${x}px`
   this.getLargura = () => this.elemento.clientWidth
 
@@ -78,24 +78,32 @@ function Passaro(alturaJogo, escala = 1) {
   this.elemento.style.width = `${60 * escala}px`
   this.elemento.style.bottom = '0px'
 
-  this.getY = () => parseInt(this.elemento.style.bottom?.split('px')[0] || '0')
+  this.getY = () => parseInt(this.elemento.style.bottom?.replace('px', '') || '0')
   this.setY = y => this.elemento.style.bottom = `${y}px`
 
   if ('ontouchstart' in window) {
     window.ontouchstart = () => voando = true
     window.ontouchend = () => voando = false
   } else {
-    window.onkeydown = () => voando = true
-    window.onkeyup = () => voando = false
+    window.onkeydown = e => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') voando = true
+    }
+    window.onkeyup = e => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') voando = false
+    }
   }
 
   this.animar = () => {
     const novoY = this.getY() + (voando ? 8 : -5)
     const alturaMaxima = alturaJogo - this.elemento.clientHeight
 
-    if (novoY <= 0) this.setY(0)
-    else if (novoY >= alturaMaxima) this.setY(alturaMaxima)
-    else this.setY(novoY)
+    if (novoY < 0) {
+      this.setY(0)
+    } else if (novoY > alturaMaxima) {
+      this.setY(alturaMaxima)
+    } else {
+      this.setY(novoY)
+    }
   }
 
   this.setY(alturaJogo / 2)
@@ -138,38 +146,37 @@ function FlappyBird() {
   areaDoJogo.innerHTML = ''
 
   const largura = areaDoJogo.clientWidth
+  const altura = areaDoJogo.clientHeight
 
-  const altura = largura < 480
-    ? largura * (9 / 12)
-    : largura * (7 / 12)
-
-  areaDoJogo.style.height = `${altura}px`
-
-  const larguraTela = window.innerWidth
-
+  // Espaço horizontal entre as barreiras
   let espacoBarreiras
-
-  if (larguraTela <= 600) {
+  if (largura <= 600) {
     espacoBarreiras = 300
-  } else if (larguraTela <= 1024) {
-    espacoBarreiras = 400
+  } else if (largura <= 1024) {
+    espacoBarreiras = 350
   } else {
     espacoBarreiras = 450
   }
 
+  // Abertura vertical entre barreiras: 30% da altura do container, com limites
   let abertura
-  if (larguraTela <= 600) {        // celular
-    abertura = 170
-  } else if (larguraTela <= 1024) { // tablet
-    abertura = 190
-  } else {                          // notebook/desktop
-    abertura = 430
+
+  if (largura <= 480) {
+    // Mobile - abertura menor, entre 130 e 180px
+    abertura = Math.min(Math.max(altura * 0.25, 160), 180)
+  } else if (largura <= 1024) {
+    // Tablet - abertura média, entre 180 e 250px
+    abertura = Math.min(Math.max(altura * 0.3, 190), 220)
+  } else {
+    // Desktop - abertura maior, entre 220 e 240px
+    abertura = Math.min(Math.max(altura * 0.35, 220), 240)
   }
 
+  // Escala do pássaro conforme largura da área
   let escalaPassaro
-  if (larguraTela <= 600) {
+  if (largura <= 600) {
     escalaPassaro = 0.7
-  } else if (larguraTela <= 1024) {
+  } else if (largura <= 1024) {
     escalaPassaro = 0.85
   } else {
     escalaPassaro = 1
@@ -178,6 +185,17 @@ function FlappyBird() {
   const recorde = new Recorde()
   const progresso = new Progresso()
   const passaro = new Passaro(altura, escalaPassaro)
+
+  // Limitador de voo para garantir que o pássaro não saia da área
+  const originalAnimar = passaro.animar.bind(passaro)
+  passaro.animar = () => {
+    originalAnimar()
+    const y = passaro.getY()
+    const alturaMaxima = altura - passaro.elemento.clientHeight
+    if (y < 0) passaro.setY(0)
+    else if (y > alturaMaxima) passaro.setY(alturaMaxima)
+  }
+
   const barreiras = new Barreiras(altura, largura, abertura, espacoBarreiras, () => {
     progresso.atualizarPontos(++pontos)
   })
@@ -235,12 +253,9 @@ function iniciarJogo() {
 
 btnIniciar.addEventListener('click', iniciarJogo)
 btnRestart.addEventListener('click', iniciarJogo)
-
-// Opcional: delegação para garantir toque/click no botão restart em mobiles
-overlay.addEventListener('click', (event) => {
-  if (event.target === btnRestart) iniciarJogo()
+overlay.addEventListener('click', e => {
+  if (e.target === btnRestart) iniciarJogo()
 })
-overlay.addEventListener('touchstart', (event) => {
-  if (event.target === btnRestart) iniciarJogo()
+overlay.addEventListener('touchstart', e => {
+  if (e.target === btnRestart) iniciarJogo()
 })
-

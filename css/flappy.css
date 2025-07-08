@@ -8,6 +8,7 @@ body {
   overflow-y: hidden;
   background-color: #0D262D;
   color: #fff;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .conteudo {
@@ -31,17 +32,23 @@ body {
 
 [tp-flappy] {
   position: relative;
-  border: 5px solid dodgerblue;
   width: 100vw;
-  max-width: 100%;
-  max-height: 80vh;
-  /* Limita altura para celulares */
+  max-width: 100vw;
+  aspect-ratio: 12 / 7;
+  max-height: 600px;
+  min-height: 320px;
+  border: 5px solid dodgerblue;
   background-color: deepskyblue;
   overflow: hidden;
   margin: 0 auto;
   box-sizing: border-box;
-  aspect-ratio: 12 / 7;
-  /* mantém a proporção */
+}
+
+/* Responsividade da altura */
+@media (max-width: 480px) {
+  [tp-flappy] {
+    min-height: 280px;
+  }
 }
 
 .passaro {
@@ -50,6 +57,7 @@ body {
   max-width: 100%;
   height: auto;
   user-select: none;
+  will-change: bottom;
 }
 
 .par-de-barreiras {
@@ -86,12 +94,10 @@ body {
 @media (max-width: 480px) {
   .barreira .borda {
     width: 90px;
-    /* antes 130px */
   }
 
   .barreira .corpo {
     width: 70px;
-    /* antes 110px */
   }
 }
 
@@ -101,7 +107,6 @@ body {
   right: 10px;
   font-family: 'Pixel', monospace, sans-serif;
   font-size: clamp(24px, 8vw, 70px);
-  /* responsivo */
   z-index: 998;
   color: white;
   user-select: none;
@@ -121,7 +126,6 @@ body {
   user-select: none;
 }
 
-/* Fundo escurecido (overlay) */
 #overlay {
   position: fixed;
   top: 0;
@@ -130,24 +134,18 @@ body {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
-  /* importante para mostrar o overlay */
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  /* alto para ficar acima do jogo */
   gap: 20px;
 }
 
-/* Começa escondido o botão Restart */
 #btn-restart {
   background: linear-gradient(to right, #ff416c, #ff4b2b);
   visibility: hidden;
-  /* mantém o botão "invisível" mas ocupando espaço */
 }
 
-
-/* Botões centrais */
 .btn-jogo {
   padding: 15px 40px;
   font-size: 22px;
@@ -178,8 +176,6 @@ main[tp-flappy] {
   z-index: 1;
   width: 100vw;
   max-width: 100vw;
-  height: calc((100vw * 7) / 12);
-  /* mantém a proporção 12:7 de forma responsiva */
   max-height: 100vh;
 }
 
