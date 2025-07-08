@@ -71,41 +71,54 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
 }
 
 function Passaro(alturaJogo, escala = 1) {
-  let voando = false
+  let voando = false;
 
-  this.elemento = novoElemento('img', 'passaro')
-  this.elemento.src = 'imagens/passaro.png'
-  this.elemento.style.width = `${60 * escala}px`
-  this.elemento.style.bottom = '0px'
-  this.elemento.style.left = '50%'
-  this.elemento.style.transform = 'translateX(-50%)' // centraliza o pássaro no eixo horizontal
+  this.elemento = novoElemento('img', 'passaro');
+  this.elemento.src = 'imagens/passaro.png';
+  this.elemento.style.width = `${60 * escala}px`;
+  this.elemento.style.position = 'absolute';
+  this.elemento.style.left = '50%';
+  this.elemento.style.transform = 'translateX(-50%)';
 
-  this.getY = () => parseInt(this.elemento.style.bottom?.split('px')[0] || '0')
-  this.setY = y => this.elemento.style.bottom = `${y}px`
+  this.getY = () => parseFloat(this.elemento.style.bottom) || 0;
+  this.setY = y => this.elemento.style.bottom = `${y}px`;
 
   if ('ontouchstart' in window) {
-    window.ontouchstart = () => voando = true
-    window.ontouchend = () => voando = false
+    window.ontouchstart = () => voando = true;
+    window.ontouchend = () => voando = false;
   } else {
-    window.onkeydown = () => voando = true
-    window.onkeyup = () => voando = false
+    window.onkeydown = () => voando = true;
+    window.onkeyup = () => voando = false;
   }
+
+  // Variável para armazenar altura real do pássaro
+  let alturaPassaroReal = 0;
+
+  // Garantir que a altura do pássaro só será usada após a imagem carregar
+  this.elemento.onload = () => {
+    alturaPassaroReal = this.elemento.clientHeight;
+  };
 
   this.animar = () => {
-    // Atualiza a altura máxima considerando o tamanho atual do pássaro
-    const alturaMaxima = alturaJogo - this.elemento.clientHeight
+    // Usa a altura real do pássaro ou fallback (mesmo valor usado no width para manter proporção)
+    const alturaP = alturaPassaroReal || (60 * escala);
 
-    let novoY = this.getY() + (voando ? 8 : -5)
+    // Pega o container do jogo para ter a altura real dele (com bordas e padding)
+    const container = this.elemento.parentElement;
+    const alturaContainer = container ? container.clientHeight : alturaJogo;
 
-    // Corrige se o pássaro tentar sair do limite inferior
-    if (novoY <= 0) novoY = 0
-    // Corrige se o pássaro tentar sair do limite superior
-    else if (novoY >= alturaMaxima) novoY = alturaMaxima
+    // Limita o pássaro dentro da área visível do container
+    const alturaMaxima = alturaContainer - alturaP;
 
-    this.setY(novoY)
-  }
+    let novoY = this.getY() + (voando ? 8 : -5);
 
-  this.setY(alturaJogo / 2)
+    if (novoY < 0) novoY = 0;
+    else if (novoY > alturaMaxima) novoY = alturaMaxima;
+
+    this.setY(novoY);
+  };
+
+  this.setY(alturaJogo / 2);
 }
 
 function Progresso() {
@@ -254,3 +267,5 @@ btnRestart.addEventListener('click', iniciarJogo)
 // Suporte a toque
 btnRestart.addEventListener('touchstart', iniciarJogo)
 btnIniciar.addEventListener('touchstart', iniciarJogo)
+
+
