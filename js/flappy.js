@@ -68,32 +68,36 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
 }
 
 function Passaro(alturaJogo) {
-  let voando = false
+  let voando = false;
 
-  this.elemento = novoElemento('img', 'passaro')
-  this.elemento.src = 'imagens/passaro.png'
-  this.elemento.style.bottom = '0px'
+  this.elemento = novoElemento('img', 'passaro');
+  this.elemento.src = 'imagens/passaro.png';
+  this.elemento.style.bottom = '0px';
 
-  this.getY = () => parseInt(this.elemento.style.bottom?.split('px')[0] || '0')
-  this.setY = y => this.elemento.style.bottom = `${y}px`
+  this.getY = () => parseInt(this.elemento.style.bottom?.split('px')[0] || '0');
+  this.setY = y => this.elemento.style.bottom = `${y}px`;
 
-  window.onkeydown = () => voando = true
-  window.onkeyup = () => voando = false
+  window.onkeydown = () => voando = true;
+  window.onkeyup = () => voando = false;
+
+  // Adicione aqui para tocar na tela (mobile/tablet)
+  window.ontouchstart = () => voando = true;
+  window.ontouchend = () => voando = false;
 
   this.animar = () => {
-    const novoY = this.getY() + (voando ? 8 : -5)
-    const alturaMaxima = alturaJogo - this.elemento.clientHeight
+    const novoY = this.getY() + (voando ? 8 : -5);
+    const alturaMaxima = alturaJogo - this.elemento.clientHeight;
 
     if (novoY <= 0) {
-      this.setY(0)
+      this.setY(0);
     } else if (novoY >= alturaMaxima) {
-      this.setY(alturaMaxima)
+      this.setY(alturaMaxima);
     } else {
-      this.setY(novoY)
+      this.setY(novoY);
     }
-  }
+  };
 
-  this.setY(alturaJogo / 2)
+  this.setY(alturaJogo / 2);
 }
 
 function Progresso() {
