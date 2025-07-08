@@ -1,13 +1,10 @@
-/* Pequeno reset na página*/
-html {
-  height: 100%;
-}
-
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
   background-color: #0D262D;
   color: #fff;
-  height: 100%;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .conteudo {
@@ -17,24 +14,15 @@ body {
   min-height: 100%;
 }
 
-/* Estilo do Game */
-
-* {
-  box-sizing: border-box;
-}
-
-@font-face {
-  font-family: 'Pixel';
-  src: url('../fonts/Pixel.ttf');
-}
-
-
 [tp-flappy] {
   position: relative;
-  border: 5px solid dodgerblue;
-  height: 700px;
-  width: 1200px;
+  width: 100vw;
+  max-width: 1200px;
+  height: 600px;
+  max-height: 100vh;
   background-color: deepskyblue;
+  border: 5px solid dodgerblue;
+  margin: 1rem auto;
   overflow: hidden;
 }
 
@@ -42,7 +30,7 @@ body {
   position: absolute;
   width: 60px;
   left: calc(50% - 30px);
-
+  user-select: none;
 }
 
 .par-de-barreiras {
@@ -78,28 +66,27 @@ body {
 .progresso {
   position: absolute;
   top: 70px;
-  /* antes era 10px */
   right: 10px;
-  font-family: 'Pixel';
+  font-family: monospace;
   font-size: 70px;
   z-index: 998;
-  /* menor que o recorde, mas ainda alto */
+  user-select: none;
 }
 
 .recorde {
   position: absolute;
   top: 10px;
   right: 10px;
-
   font-size: 30px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.5);
   padding: 6px 10px;
   border-radius: 4px;
   z-index: 999;
+  user-select: none;
 }
 
-/* Fundo escurecido (overlay) */
+/* Overlay escurecido */
 #overlay {
   position: fixed;
   top: 0;
@@ -107,13 +94,15 @@ body {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
-  display: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 9999;
 }
 
-/* Botões centrais */
+/* Botões do jogo */
 .btn-jogo {
   padding: 15px 40px;
   font-size: 22px;
@@ -121,10 +110,11 @@ body {
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
   background: linear-gradient(to right, #00c6ff, #0072ff);
   color: white;
+  user-select: none;
+  transition: all 0.3s ease;
 }
 
 .btn-jogo:hover {
@@ -134,14 +124,4 @@ body {
 
 #btn-restart {
   background: linear-gradient(to right, #ff416c, #ff4b2b);
-}
-
-body {
-  margin: 0;
-  overflow: hidden;
-}
-
-main[tp-flappy] {
-  position: relative;
-  z-index: 1;
 }

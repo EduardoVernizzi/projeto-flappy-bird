@@ -13,7 +13,7 @@ function Barreira(reversa = false) {
   this.elemento.appendChild(reversa ? corpo : borda)
   this.elemento.appendChild(reversa ? borda : corpo)
 
-  this.setAltura = altura => corpo.style.height = `${altura}px`
+  this.setAltura = altura => (corpo.style.height = `${altura}px`)
 }
 
 function ParDeBarreiras(altura, abertura, x) {
@@ -33,8 +33,8 @@ function ParDeBarreiras(altura, abertura, x) {
     this.inferior.setAltura(alturaInferior)
   }
 
-  this.getX = () => parseInt(this.elemento.style.left?.split('px')[0] || '0')
-  this.setX = x => this.elemento.style.left = `${x}px`
+  this.getX = () => parseInt(this.elemento.style.left?.replace('px', '') || '0')
+  this.setX = x => (this.elemento.style.left = `${x}px`)
   this.getLargura = () => this.elemento.clientWidth
 
   this.sortearAbertura()
@@ -46,7 +46,7 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
     new ParDeBarreiras(altura, abertura, largura),
     new ParDeBarreiras(altura, abertura, largura + espaco),
     new ParDeBarreiras(altura, abertura, largura + espaco * 2),
-    new ParDeBarreiras(altura, abertura, largura + espaco * 3)
+    new ParDeBarreiras(altura, abertura, largura + espaco * 3),
   ]
 
   const deslocamento = 3
@@ -68,41 +68,46 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
 }
 
 function Passaro(alturaJogo) {
-  let voando = false;
+  let voando = false
 
-  this.elemento = novoElemento('img', 'passaro');
-  this.elemento.src = 'imagens/passaro.png';
-  this.elemento.style.bottom = '0px';
+  this.elemento = novoElemento('img', 'passaro')
+  this.elemento.src = 'imagens/passaro.png'
+  this.elemento.style.bottom = '0px'
 
-  this.getY = () => parseInt(this.elemento.style.bottom?.split('px')[0] || '0');
-  this.setY = y => this.elemento.style.bottom = `${y}px`;
+  this.getY = () => parseInt(this.elemento.style.bottom?.replace('px', '') || '0')
+  this.setY = y => (this.elemento.style.bottom = `${y}px`)
 
-  window.onkeydown = () => voando = true;
-  window.onkeyup = () => voando = false;
+  // Controle teclado
+  window.onkeydown = e => {
+    if (e.code === 'Space' || e.code === 'ArrowUp') voando = true
+  }
+  window.onkeyup = e => {
+    if (e.code === 'Space' || e.code === 'ArrowUp') voando = false
+  }
 
-  // Adicione aqui para tocar na tela (mobile/tablet)
-  window.ontouchstart = () => voando = true;
-  window.ontouchend = () => voando = false;
+  // Controle toque mobile/tablet
+  window.ontouchstart = () => (voando = true)
+  window.ontouchend = () => (voando = false)
 
   this.animar = () => {
-    const novoY = this.getY() + (voando ? 8 : -5);
-    const alturaMaxima = alturaJogo - this.elemento.clientHeight;
+    const novoY = this.getY() + (voando ? 8 : -5)
+    const alturaMaxima = alturaJogo - this.elemento.clientHeight
 
     if (novoY <= 0) {
-      this.setY(0);
+      this.setY(0)
     } else if (novoY >= alturaMaxima) {
-      this.setY(alturaMaxima);
+      this.setY(alturaMaxima)
     } else {
-      this.setY(novoY);
+      this.setY(novoY)
     }
-  };
+  }
 
-  this.setY(alturaJogo / 2);
+  this.setY(alturaJogo / 2)
 }
 
 function Progresso() {
   this.elemento = novoElemento('span', 'progresso')
-  this.atualizarPontos = pontos => this.elemento.innerHTML = pontos
+  this.atualizarPontos = pontos => (this.elemento.innerHTML = pontos)
   this.atualizarPontos(0)
 }
 
@@ -133,8 +138,7 @@ function colidiu(passaro, barreiras) {
     const superior = par.superior.elemento
     const inferior = par.inferior.elemento
 
-    return estaoSobrePostos(passaro.elemento, superior) ||
-      estaoSobrePostos(passaro.elemento, inferior)
+    return estaoSobrePostos(passaro.elemento, superior) || estaoSobrePostos(passaro.elemento, inferior)
   })
 }
 
@@ -154,14 +158,15 @@ function FlappyBird() {
     progresso.atualizarPontos(++pontos)
   })
 
-  // Adiciona os elementos na ordem
   areaDoJogo.appendChild(recorde.elemento)
   areaDoJogo.appendChild(progresso.elemento)
   areaDoJogo.appendChild(passaro.elemento)
   barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento))
 
+  this.temporizador = null
+
   this.start = () => {
-    const temporizador = setInterval(() => {
+    this.temporizador = setInterval(() => {
       barreiras.animar()
       passaro.animar()
 
@@ -172,49 +177,53 @@ function FlappyBird() {
           recorde.atualizar(pontos)
         }
 
-        clearInterval(temporizador)
-        document.getElementById('overlay').style.display = 'flex'
-        document.getElementById('btn-restart').style.display = 'inline-block'
+        clearInterval(this.temporizador)
+        overlay.style.display = 'flex'
+        btnRestart.style.display = 'inline-block'
+        btnIniciar.style.display = 'none'
         musicaFundo.pause()
         musicaFundo.currentTime = 0
         somGameOver.play()
       }
     }, 20)
   }
+
+  this.stop = () => {
+    if (this.temporizador) clearInterval(this.temporizador)
+  }
 }
 
-
-// CONTROLE DOS BOTÕES
-let jogo = null
-
+// Controles
 const btnIniciar = document.getElementById('btn-iniciar')
 const btnRestart = document.getElementById('btn-restart')
 const overlay = document.getElementById('overlay')
 const musicaFundo = document.getElementById('musica-fundo')
-musicaFundo.volume = 0.3 // volume entre 0.0 e 1.0
-const somGameOver = new Audio('./sounds/gameover.mp3');
+musicaFundo.volume = 0.3
+const somGameOver = new Audio('./sounds/gameover.mp3')
 
-overlay.style.display = 'flex' // exibe overlay ao carregar
+let jogo = null
 
 btnIniciar.onclick = () => {
-  if (jogo) return
+  if (jogo) jogo.stop()
   jogo = new FlappyBird()
   jogo.start()
-  btnIniciar.style.display = 'none'
   overlay.style.display = 'none'
+  btnIniciar.style.display = 'none'
+  btnRestart.style.display = 'none'
   musicaFundo.currentTime = 0
   musicaFundo.play()
 }
 
 btnRestart.onclick = () => {
+  if (jogo) jogo.stop()
   jogo = new FlappyBird()
   jogo.start()
-  btnIniciar.style.display = 'none'
   overlay.style.display = 'none'
+  btnIniciar.style.display = 'none'
+  btnRestart.style.display = 'none'
   musicaFundo.currentTime = 0
   musicaFundo.play()
 }
-
 
 
 
