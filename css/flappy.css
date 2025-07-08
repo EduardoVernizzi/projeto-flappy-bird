@@ -1,3 +1,4 @@
+/* Reset e base */
 html,
 body {
   margin: 0;
@@ -19,17 +20,18 @@ body {
   width: 100%;
 }
 
-/* Estilo do Game */
-
+/* Box sizing global */
 * {
   box-sizing: border-box;
 }
 
+/* Fonte Pixel */
 @font-face {
   font-family: 'Pixel';
   src: url('../fonts/Pixel.ttf');
 }
 
+/* Área do jogo */
 [tp-flappy] {
   position: relative;
   width: 100vw;
@@ -101,6 +103,7 @@ body {
   }
 }
 
+/* Pontuação */
 .progresso {
   position: absolute;
   top: 70px;
@@ -112,6 +115,7 @@ body {
   user-select: none;
 }
 
+/* Recorde */
 .recorde {
   position: absolute;
   top: 10px;
@@ -126,23 +130,34 @@ body {
   user-select: none;
 }
 
-/* Centralização dos botões no overlay */
+/* Overlay e botões */
 #overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 3.5rem); /* deixa espaço para o footer */
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  gap: 20px;
+  gap: 10px;
+  padding-top: 30px;
+  padding-bottom: 1rem;
 }
 
-/* Ambos os botões herdam essa classe */
+/* Desktop: overlay full height */
+@media (min-width: 769px) {
+  #overlay {
+    height: 100vh;
+    padding-top: 100px;
+    padding-bottom: 0;
+  }
+}
+
+/* Botões do jogo */
 .btn-jogo {
   padding: 15px 40px;
   font-size: 22px;
@@ -163,16 +178,19 @@ body {
   opacity: 0.9;
 }
 
+/* Botão restart */
 #btn-restart {
   background: linear-gradient(to right, #ff416c, #ff4b2b);
-  visibility: hidden; /* Inicia escondido, aparece ao game over */
+  visibility: hidden;
 }
 
+/* Remove margin no body */
 body {
   margin: 0;
   overflow: hidden;
 }
 
+/* Main jogo */
 main[tp-flappy] {
   position: relative;
   z-index: 1;
@@ -181,6 +199,7 @@ main[tp-flappy] {
   max-height: 100vh;
 }
 
+/* Footer */
 #footer {
   display: flex;
   justify-content: center;
@@ -190,4 +209,18 @@ main[tp-flappy] {
   width: 100%;
   color: #fff;
   background-color: #000;
+  position: relative;
+  z-index: 1000;
+  /* garante que overlay não cubra */
+  margin-bottom: 0;
 }
+
+
+@media (max-width: 1024px) {
+  #footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+}
+

@@ -158,6 +158,7 @@ function FlappyBird() {
   }
 
   let abertura
+
   if (largura <= 480) {
     abertura = Math.min(Math.max(altura * 0.25, 160), 180)
   } else if (largura <= 1024) {
@@ -245,3 +246,6 @@ function iniciarJogo() {
 
 btnIniciar.addEventListener('click', iniciarJogo)
 btnRestart.addEventListener('click', iniciarJogo)
+
+// Removendo os listeners no overlay para evitar conflitos com o clique geral
+
