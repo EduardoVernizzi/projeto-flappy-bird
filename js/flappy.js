@@ -148,7 +148,6 @@ function FlappyBird() {
   const largura = areaDoJogo.clientWidth
   const altura = areaDoJogo.clientHeight
 
-  // Espaço horizontal entre as barreiras
   let espacoBarreiras
   if (largura <= 600) {
     espacoBarreiras = 300
@@ -158,21 +157,15 @@ function FlappyBird() {
     espacoBarreiras = 450
   }
 
-  // Abertura vertical entre barreiras: 30% da altura do container, com limites
   let abertura
-
   if (largura <= 480) {
-    // Mobile - abertura menor, entre 130 e 180px
     abertura = Math.min(Math.max(altura * 0.25, 160), 180)
   } else if (largura <= 1024) {
-    // Tablet - abertura média, entre 180 e 250px
     abertura = Math.min(Math.max(altura * 0.3, 190), 220)
   } else {
-    // Desktop - abertura maior, entre 220 e 240px
     abertura = Math.min(Math.max(altura * 0.35, 220), 240)
   }
 
-  // Escala do pássaro conforme largura da área
   let escalaPassaro
   if (largura <= 600) {
     escalaPassaro = 0.7
@@ -186,7 +179,6 @@ function FlappyBird() {
   const progresso = new Progresso()
   const passaro = new Passaro(altura, escalaPassaro)
 
-  // Limitador de voo para garantir que o pássaro não saia da área
   const originalAnimar = passaro.animar.bind(passaro)
   passaro.animar = () => {
     originalAnimar()
@@ -253,9 +245,3 @@ function iniciarJogo() {
 
 btnIniciar.addEventListener('click', iniciarJogo)
 btnRestart.addEventListener('click', iniciarJogo)
-overlay.addEventListener('click', e => {
-  if (e.target === btnRestart) iniciarJogo()
-})
-overlay.addEventListener('touchstart', e => {
-  if (e.target === btnRestart) iniciarJogo()
-})
