@@ -1,9 +1,3 @@
-const overlay = document.getElementById('overlay')
-const btnIniciar = document.getElementById('btn-iniciar')
-const btnRestart = document.getElementById('btn-restart')
-const musicaFundo = document.getElementById('musica-fundo')
-const somGameOver = new Audio('sounds/gameover.mp3')
-
 function novoElemento(tagName, className) {
   const elem = document.createElement(tagName)
   elem.className = className
@@ -12,6 +6,7 @@ function novoElemento(tagName, className) {
 
 function Barreira(reversa = false) {
   this.elemento = novoElemento('div', 'barreira')
+
   const borda = novoElemento('div', 'borda')
   const corpo = novoElemento('div', 'corpo')
 
@@ -23,6 +18,7 @@ function Barreira(reversa = false) {
 
 function ParDeBarreiras(altura, abertura, x) {
   this.elemento = novoElemento('div', 'par-de-barreiras')
+
   this.superior = new Barreira(true)
   this.inferior = new Barreira(false)
 
@@ -32,11 +28,12 @@ function ParDeBarreiras(altura, abertura, x) {
   this.sortearAbertura = () => {
     const alturaSuperior = Math.random() * (altura - abertura)
     const alturaInferior = altura - abertura - alturaSuperior
+
     this.superior.setAltura(alturaSuperior)
     this.inferior.setAltura(alturaInferior)
   }
 
-  this.getX = () => parseInt(this.elemento.style.left?.replace('px', '') || '0')
+  this.getX = () => parseInt(this.elemento.style.left?.split('px')[0] || '0')
   this.setX = x => this.elemento.style.left = `${x}px`
   this.getLargura = () => this.elemento.clientWidth
 
@@ -52,7 +49,7 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
     new ParDeBarreiras(altura, abertura, largura + espaco * 3)
   ]
 
-  const deslocamento = largura > 600 ? 3 : 2
+  const deslocamento = 3
 
   this.animar = () => {
     this.pares.forEach(par => {
@@ -70,36 +67,26 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
   }
 }
 
-function Passaro(alturaJogo, escala = 1) {
+function Passaro(alturaJogo) {
   let voando = false
 
   this.elemento = novoElemento('img', 'passaro')
   this.elemento.src = 'imagens/passaro.png'
-  this.elemento.style.width = `${60 * escala}px`
   this.elemento.style.bottom = '0px'
 
-  this.getY = () => parseInt(this.elemento.style.bottom?.replace('px', '') || '0')
+  this.getY = () => parseInt(this.elemento.style.bottom?.split('px')[0] || '0')
   this.setY = y => this.elemento.style.bottom = `${y}px`
 
-  if ('ontouchstart' in window) {
-    window.ontouchstart = () => voando = true
-    window.ontouchend = () => voando = false
-  } else {
-    window.onkeydown = e => {
-      if (e.code === 'Space' || e.code === 'ArrowUp') voando = true
-    }
-    window.onkeyup = e => {
-      if (e.code === 'Space' || e.code === 'ArrowUp') voando = false
-    }
-  }
+  window.onkeydown = () => voando = true
+  window.onkeyup = () => voando = false
 
   this.animar = () => {
     const novoY = this.getY() + (voando ? 8 : -5)
     const alturaMaxima = alturaJogo - this.elemento.clientHeight
 
-    if (novoY < 0) {
+    if (novoY <= 0) {
       this.setY(0)
-    } else if (novoY > alturaMaxima) {
+    } else if (novoY >= alturaMaxima) {
       this.setY(alturaMaxima)
     } else {
       this.setY(novoY)
@@ -117,16 +104,23 @@ function Progresso() {
 
 function Recorde() {
   this.elemento = novoElemento('span', 'recorde')
+
   this.obter = () => parseInt(localStorage.getItem('recorde') || '0')
-  this.atualizar = valor => this.elemento.innerHTML = `🏆 ${valor}`
+
+  this.atualizar = valor => {
+    this.elemento.innerHTML = `🏆 ${valor}`
+  }
+
   this.atualizar(this.obter())
 }
 
 function estaoSobrePostos(elementoA, elementoB) {
   const a = elementoA.getBoundingClientRect()
   const b = elementoB.getBoundingClientRect()
+
   const horizontal = a.left + a.width >= b.left && b.left + b.width >= a.left
   const vertical = a.top + a.height >= b.top && b.top + b.height >= a.top
+
   return horizontal && vertical
 }
 
@@ -134,6 +128,7 @@ function colidiu(passaro, barreiras) {
   return barreiras.pares.some(par => {
     const superior = par.superior.elemento
     const inferior = par.inferior.elemento
+
     return estaoSobrePostos(passaro.elemento, superior) ||
       estaoSobrePostos(passaro.elemento, inferior)
   })
@@ -145,63 +140,24 @@ function FlappyBird() {
   const areaDoJogo = document.querySelector('[tp-flappy]')
   areaDoJogo.innerHTML = ''
 
-  const largura = areaDoJogo.clientWidth
   const altura = areaDoJogo.clientHeight
-
-  let espacoBarreiras
-  if (largura <= 600) {
-    espacoBarreiras = 300
-  } else if (largura <= 1024) {
-    espacoBarreiras = 350
-  } else {
-    espacoBarreiras = 450
-  }
-
-  let abertura
-
-  if (largura <= 480) {
-    abertura = Math.min(Math.max(altura * 0.25, 160), 180)
-  } else if (largura <= 1024) {
-    abertura = Math.min(Math.max(altura * 0.3, 190), 220)
-  } else {
-    abertura = Math.min(Math.max(altura * 0.35, 220), 240)
-  }
-
-  let escalaPassaro
-  if (largura <= 600) {
-    escalaPassaro = 0.7
-  } else if (largura <= 1024) {
-    escalaPassaro = 0.85
-  } else {
-    escalaPassaro = 1
-  }
+  const largura = areaDoJogo.clientWidth
 
   const recorde = new Recorde()
   const progresso = new Progresso()
-  const passaro = new Passaro(altura, escalaPassaro)
-
-  const originalAnimar = passaro.animar.bind(passaro)
-  passaro.animar = () => {
-    originalAnimar()
-    const y = passaro.getY()
-    const alturaMaxima = altura - passaro.elemento.clientHeight
-    if (y < 0) passaro.setY(0)
-    else if (y > alturaMaxima) passaro.setY(alturaMaxima)
-  }
-
-  const barreiras = new Barreiras(altura, largura, abertura, espacoBarreiras, () => {
+  const passaro = new Passaro(altura)
+  const barreiras = new Barreiras(altura, largura, 200, 400, () => {
     progresso.atualizarPontos(++pontos)
   })
 
+  // Adiciona os elementos na ordem
   areaDoJogo.appendChild(recorde.elemento)
   areaDoJogo.appendChild(progresso.elemento)
   areaDoJogo.appendChild(passaro.elemento)
   barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento))
 
-  this.temporizador = null
-
   this.start = () => {
-    this.temporizador = setInterval(() => {
+    const temporizador = setInterval(() => {
       barreiras.animar()
       passaro.animar()
 
@@ -212,40 +168,50 @@ function FlappyBird() {
           recorde.atualizar(pontos)
         }
 
-        clearInterval(this.temporizador)
-        overlay.style.display = 'flex'
-        btnRestart.style.visibility = 'visible'
-        btnIniciar.style.visibility = 'hidden'
+        clearInterval(temporizador)
+        document.getElementById('overlay').style.display = 'flex'
+        document.getElementById('btn-restart').style.display = 'inline-block'
         musicaFundo.pause()
         musicaFundo.currentTime = 0
         somGameOver.play()
       }
     }, 20)
   }
-
-  this.stop = () => {
-    if (this.temporizador) clearInterval(this.temporizador)
-  }
 }
 
+
+// CONTROLE DOS BOTÕES
 let jogo = null
 
-function iniciarJogo() {
-  if (jogo) jogo.stop()
+const btnIniciar = document.getElementById('btn-iniciar')
+const btnRestart = document.getElementById('btn-restart')
+const overlay = document.getElementById('overlay')
+const musicaFundo = document.getElementById('musica-fundo')
+musicaFundo.volume = 0.3 // volume entre 0.0 e 1.0
+const somGameOver = new Audio('./sounds/gameover.mp3');
+
+overlay.style.display = 'flex' // exibe overlay ao carregar
+
+btnIniciar.onclick = () => {
+  if (jogo) return
   jogo = new FlappyBird()
   jogo.start()
-
+  btnIniciar.style.display = 'none'
   overlay.style.display = 'none'
-  btnIniciar.style.visibility = 'hidden'
-  btnRestart.style.visibility = 'hidden'
-
-  musicaFundo.pause()
   musicaFundo.currentTime = 0
   musicaFundo.play()
 }
 
-btnIniciar.addEventListener('click', iniciarJogo)
-btnRestart.addEventListener('click', iniciarJogo)
+btnRestart.onclick = () => {
+  jogo = new FlappyBird()
+  jogo.start()
+  btnIniciar.style.display = 'none'
+  overlay.style.display = 'none'
+  musicaFundo.currentTime = 0
+  musicaFundo.play()
+}
 
-// Removendo os listeners no overlay para evitar conflitos com o clique geral
+
+
+
 

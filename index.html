@@ -3,33 +3,29 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Mini curso - Construindo seu jogo em JavaScript</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flappy Bird</title>
   <link rel="stylesheet" href="css/flappy.css" />
-  <link rel="icon" type="image/png" href="./imagens/favicon.png">
+  <link rel="icon" type="image/png" href="imagens/favicon.png" />
 </head>
+
 
 <body class="conteudo">
   <h1>Flappy Bird</h1>
-
-  <main tp-flappy="true">
+  
+  
+  <main tp-flappy>
+    <!-- Jogo -->
+    
   </main>
-
+  
+  <!-- Overlay com botões -->
   <div id="overlay">
     <button id="btn-iniciar" class="btn-jogo">INICIAR</button>
-    <button id="btn-restart" class="btn-jogo" style="visibility: hidden;">RESTART</button>
+    <button id="btn-restart" class="btn-jogo" style="display: none;">RESTART</button>
   </div>
 
-  <section id="footer">
-    <p> &copy; Carlos Eduardo Vernizzi Silva. Todos os direitos reservados. </p>
-  </section>
-
-  <!-- Áudio do fundo -->
-  <audio id="musica-fundo" src="./sounds/som.mp3" loop></audio>
-
-  <!-- Áudio do game over -->
-  <audio id="somGameOver" src="./sounds/gameover.mp3"></audio>
-
+  <audio id="musica-fundo" src="./sounds/som.mp3" loop autoplay></audio>
   <script src="js/flappy.js"></script>
 </body>
 
