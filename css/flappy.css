@@ -182,3 +182,14 @@ main[tp-flappy] {
   /* mantém a proporção 12:7 de forma responsiva */
   max-height: 100vh;
 }
+
+#footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+  width: 100%;
+  color: #fff;
+  background-color: #000;
+}
