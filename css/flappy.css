@@ -126,6 +126,7 @@ body {
   user-select: none;
 }
 
+/* Centralização dos botões no overlay */
 #overlay {
   position: fixed;
   top: 0;
@@ -138,14 +139,10 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 9999;
- 
+  gap: 20px;
 }
 
-#btn-restart {
-  background: linear-gradient(to right, #ff416c, #ff4b2b);
-  visibility: hidden;
-}
-
+/* Ambos os botões herdam essa classe */
 .btn-jogo {
   padding: 15px 40px;
   font-size: 22px;
@@ -164,6 +161,11 @@ body {
 .btn-jogo:hover {
   transform: scale(1.05);
   opacity: 0.9;
+}
+
+#btn-restart {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  visibility: hidden; /* Inicia escondido, aparece ao game over */
 }
 
 body {
